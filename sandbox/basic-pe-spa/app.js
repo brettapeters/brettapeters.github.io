@@ -1,67 +1,80 @@
-document.addEventListener('click', function(e) {
-  var el = e.target;
+var animateTest = document.createElement('div');
+var support = {
+  animAPI: !!animateTest.animate,
+  fetch: !!window.fetch,
+  histAPI: !!window.history
+};
 
-  while (el && !el.href) {
-    el = el.parentNode;
-  }
+if (support.fetch && support.histAPI) {
+  document.addEventListener('click', function(e) {
+    var el = e.target;
 
-  if (el) {
-    e.preventDefault();
-    history.pushState(null, null, el.href);
-    changePage();
-
-    return;
-  }
-})
-
-window.addEventListener('popstate', changePage);
-
-var main = document.querySelector('main');
-var fetchError = '<div class="cc"><h1>Error fetching content :(</h1></div>';
-
-function loadPage(url) {
-  return fetch(url, {
-    method: 'GET'
-  }).then(function(response) {
-    if (response.ok) {
-      return response.text();
+    while (el && !el.href) {
+      el = el.parentNode;
     }
-    return fetchError;
-  }).catch(function(err) {
-    return fetchError;
-  });
-}
 
-function changePage() {
-  var url = window.location.href;
+    if (el) {
+      e.preventDefault();
+      history.pushState(null, null, el.href);
+      changePage();
 
-  loadPage(url).then(function(responseText) {
-    var wrapper = document.createElement('div');
-    wrapper.innerHTML = responseText;
+      return;
+    }
+  })
 
-    var oldContent = document.querySelector('.cc');
-    var newContent = wrapper.querySelector('.cc');
+  window.addEventListener('popstate', changePage);
 
-    main.insertBefore(newContent, main.firstChild);
-    animate(oldContent, newContent);
-  });
-}
+  var main = document.querySelector('main');
+  var fetchError = '<div class="cc"><h1>Error fetching content :(</h1></div>';
 
-function animate(oldContent, newContent) {
-  newContent.style.position = 'absolute';
-  newContent.style.width = '40em';
+  function loadPage(url) {
+    return fetch(url, {
+      method: 'GET'
+    }).then(function(response) {
+      if (response.ok) {
+        return response.text();
+      }
+      return fetchError;
+    }).catch(function(err) {
+      return fetchError;
+    });
+  }
 
-  var fadeOut = oldContent.animate({
-    opacity: [1, 0]
-  }, 300);
+  function changePage() {
+    var url = window.location.href;
 
-  var fadeIn = newContent.animate({
-    opacity: [0, 1]
-  }, 300);
+    loadPage(url).then(function(responseText) {
+      var wrapper = document.createElement('div');
+      wrapper.innerHTML = responseText;
 
-  fadeIn.onfinish = function() {
-    oldContent.parentNode.removeChild(oldContent);
-    newContent.style.position = '';
-    newContent.style.width = '';
-  };
+      var oldContent = document.querySelector('.cc');
+      var newContent = wrapper.querySelector('.cc');
+
+      main.insertBefore(newContent, main.firstChild);
+      animate(oldContent, newContent);
+    });
+  }
+
+  function animate(oldContent, newContent) {
+    if (support.animAPI) {
+      newContent.style.position = 'absolute';
+      newContent.style.width = '40em';
+
+      var fadeOut = oldContent.animate({
+        opacity: [1, 0]
+      }, 300);
+
+      var fadeIn = newContent.animate({
+        opacity: [0, 1]
+      }, 300);
+
+      fadeIn.onfinish = function() {
+        oldContent.parentNode.removeChild(oldContent);
+        newContent.style.position = '';
+        newContent.style.width = '';
+      };
+    } else {
+      oldContent.parentNode.removeChild(oldContent);
+    }
+  }
 }
