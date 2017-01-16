@@ -4,15 +4,15 @@ form.addEventListener('submit', function(event) {
   event.preventDefault();
   var input = event.target[0];
   var n = parseInt(input.value);
-  
+
   if (n < 0) {
     input.parentNode.classList.add('has-error');
     return false;
   }
-  
+
   var result = document.querySelector('.result');
   result.textContent = '';
-  
+
   var ids = document.createDocumentFragment();
   while(n--) {
     var item = document.createElement('li');
@@ -21,10 +21,10 @@ form.addEventListener('submit', function(event) {
     item.appendChild(id);
     ids.appendChild(item);
   }
-  var list = document.createElement('ol');
+  var list = document.createElement('ul');
   list.appendChild(ids);
   result.appendChild(list);
-  
+
   result.classList.add('showing');
 });
 
@@ -47,7 +47,7 @@ var ripple = (function() {
     var tl = new TimelineLite(),
         rippleObj = this.querySelectorAll(".js-ripple"),
         scaleRatio = farthestCornerOffset(event);
-    
+
     tl.fromTo(rippleObj, 0.5, {
       x: event.offsetX,
       y: event.offsetY,
@@ -59,25 +59,25 @@ var ripple = (function() {
       scale: scaleRatio
     });
   }
-        
+
   function farthestCornerOffset(event) {
     var rect = event.target.getBoundingClientRect(),
         x = Math.max(event.clientX, event.target.offsetLeft),
         y = Math.max(event.clientY, event.target.offsetTop),
         deltaX = Math.max(Math.abs(rect.left - x), rect.right - x),
         deltaY = Math.max(Math.abs(rect.top - y), rect.bottom - y);
-    
+
     return Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
   }
-  
+
   function arrayize(arrayLike) {
     return Array.prototype.slice.call(arrayLike);
   }
-  
+
   function attachAnimation(button) {
     button.addEventListener("click", rippleAnimation)
   }
-  
+
   return {
     init: function() {
       var buttons = document.getElementsByClassName("js-ripple-btn");
