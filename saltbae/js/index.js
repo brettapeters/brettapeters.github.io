@@ -13,23 +13,23 @@ canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 var ctx = canvas.getContext('2d');
 
-var saltiness = 500;
-var fallSpeed = 0.4;
+var saltiness = 0.75;
+var grains = 500
+var fallSpeed = 0.25;
 
-function Salt(x, y) {
-  var t = 0;
-  var delay = Math.random() * -saltiness;
+// Individual salt grain
+function Salt() {
+  var x, y, t;
   var radius = Math.max(2, canvas.height / 300);
 
   function draw() {
-    if (t + delay >= 0) {
-      ctx.beginPath();
-      ctx.fillStyle = 'white';
-      ctx.arc(x, y, radius, 0, Math.PI * 2);
-      ctx.fill();
-      y += fallSpeed * (t + delay);
-      x += fallSpeed * drift(t + delay);
-    }
+		if (y > canvas.height) return;
+    ctx.beginPath();
+    ctx.fillStyle = 'white';
+    ctx.arc(x, y, radius, 0, Math.PI * 2);
+    ctx.fill();
+    y += fallSpeed * t;
+    x += fallSpeed * drift(t);
     t++;
   }
 
@@ -37,28 +37,48 @@ function Salt(x, y) {
     return (Math.random() * 2 - 1) * t;
   }
 
-  return { draw: draw };
+	function setStartPos(xStart, yStart) {
+		t = 0;
+		x = xStart;
+		y = yStart;
+	}
+
+  return {
+		draw: draw,
+		setStartPos: setStartPos,
+	};
 }
 
+// Bae
 function SaltBae(saltiness) {
-  var baeImage = new Image();
+	this.salting = false;
+	var baeImage = new Image();
   baeImage.src = 'images/saltbae_cutout.png';
   var imgX = 0;
-  var saltX = imgX + canvas.height / 5;
-  var stream = [];
-  for (var i = 0; i < saltiness; i++) {
-    stream.push(Salt(saltX, canvas.height / 7));
-  }
 
-  function throwSalt() {
-    stream.forEach(function(salt) {
-      salt.draw();
-    });
+	var saltGrains = [];
+	for (var i = 0; i < grains; i++) {
+		saltGrains.push(Salt());
+	}
+
+	var j = 0;
+  function dropSalt() {
+		if (this.salting) {
+			if (Math.random() < saltiness) {
+				saltGrains[j % grains].setStartPos(
+					imgX + canvas.height / 5, canvas.height / 7
+				);
+				j++;
+			}
+		};
+		saltGrains.forEach(function(salt) {
+			salt.draw();
+		});
   }
 
   function drawBae() {
     var sx = 0, sy = 0,
-        sh = 343, sw = 258,
+        sh = baeImage.height, sw = baeImage.width,
         dx = imgX, dy = 0,
         dh = canvas.height,
         dw = canvas.height * (sw / sh);
@@ -76,18 +96,20 @@ function SaltBae(saltiness) {
 
   return {
     drawBae: drawBae,
-    throwSalt: throwSalt,
+    dropSalt: dropSalt,
     move: move,
   };
 }
 
 var saltBae = SaltBae(saltiness);
 (function animLoop() {
-  rAF(animLoop);
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   saltBae.drawBae();
+	saltBae.dropSalt();
+  rAF(animLoop);
 })();
 
+// events
 // resize
 window.onresize = function() {
 	canvas.width = window.innerWidth;
@@ -98,4 +120,14 @@ window.onresize = function() {
 // mousemove
 document.addEventListener('mousemove', function(event) {
   saltBae.move(event.clientX);
-})
+});
+
+// mousedown
+document.addEventListener('mousedown', function(event) {
+	saltBae.salting = true;
+});
+
+// mouseup
+document.addEventListener('mouseup', function(event) {
+	saltBae.salting = false;
+});
