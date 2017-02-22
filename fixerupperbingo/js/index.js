@@ -6,7 +6,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var SQUARE_NAMES = ['Open floorplan', 'Take down a wall', 'Curb appeal', 'Raise ceiling', 'Crown Moulding', 'Farmhouse sink', 'Farmhouse chandelier', 'Rustic charm', 'Buyers envision drinking alcohol outside', 'Add island to kitchen', 'Chip breaks something', 'Basket of crayons', '"That\'s an easy fix"'];
+var SQUARE_NAMES = ['Open floorplan', 'Take down a wall', 'Curb appeal', 'Raise ceiling', 'Crown molding', 'Farmhouse sink', 'Farmhouse chandelier', 'Rustic charm', 'Buyers envision drinking alcohol outside', 'Add island to kitchen', 'Chip breaks something', 'Basket of crayons', 'Something is an "easy fix"', 'Eat-in kitchen', 'Load-bearing wall', 'Double vanity', 'Popcorn ceiling', 'Natural light', 'Shiplap', 'Backsplash', 'Recessed lighting', 'Buyers pick house 1', 'Buyers pick house 2', 'Buyers pick house 3', 'Buyers get house for under list', 'Inspirational sign'];
 
 var Bingo = function (_React$Component) {
   _inherits(Bingo, _React$Component);
