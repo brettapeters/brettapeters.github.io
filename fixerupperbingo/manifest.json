@@ -1,6 +1,6 @@
 {
   "name": "Fixer Upper Bingo",
-  "short_name": "Fixer Upper Bingo",
+  "short_name": "FixerUpper",
   "start_url": "index.html?launcher=true",
   "theme_color": "rgb(7, 65, 72)",
   "background_color": "rgb(7, 65, 72)",
