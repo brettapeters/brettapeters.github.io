@@ -1,0 +1,125 @@
+@import url('https://fonts.googleapis.com/css?family=Arimo');
+@import url('https://fonts.googleapis.com/css?family=Lobster');
+
+:root {
+  /*--accent-color: #30ffbc;*/
+  --accent-color: #18bc9c;
+
+  --dark-bg-color: #000021;
+  --main-text-color: #fff;
+  --secondary-text-color: #a0a0af;
+
+  --light-bg-color: #f3f3f3;
+  --dark-main-text-color: #000021;
+  --dark-secondary-text-color: #4a4a61;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  font-family: 'Arimo', sans-serif;
+  margin: 0;
+  font-size: 16px;
+  color: var(--dark-main-text-color);
+}
+
+a {
+  color: var(--main-text-color);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--secondary-text-color);
+}
+
+ul {
+  padding-left: 0;
+  margin: 0;
+}
+
+h1 {
+  font-family: 'Lobster', cursive;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 100;
+}
+
+.container {
+  max-width: 1024px;
+  min-width: 320px;
+  margin: 0 auto;
+}
+
+.main-nav {
+  padding: 1em;
+  background-color: var(--dark-bg-color);
+  text-align: right;
+}
+
+.main-nav li {
+  display: inline;
+  padding: 1em;
+}
+
+.profile {
+  text-align: center;
+  background-color: var(--light-bg-color);
+}
+
+.profile header {
+  padding: 1em 0.5em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.profile a {
+  color: var(--accent-color);
+}
+
+.headshot {
+  width: 100px;
+  transition: width 150ms ease-out;
+  margin-right: 1em;
+}
+
+@media screen and (min-width: 768px) {
+  h1 {
+    font-size: 4em;
+  }
+
+  h3 {
+    font-size: 1.5em;
+  }
+
+  .profile {
+    padding: 3em 1em;
+  }
+
+  .headshot {
+    width: 200px;
+    margin-right: 3em;
+  }
+
+  .section-heading {
+    font-size: 3em;
+  }
+}
+
+.section-heading {
+  text-align: center;
+}
+
+.dark-section .section-heading {
+  color: var(--main-text-color);
+}
+
+#projects {
+  height: 100vh;
+  background-color: var(--dark-bg-color);
+  border-top: 5px solid var(--accent-color);
+}
