@@ -29,13 +29,15 @@ title: Brett Peters
 <section id="projects" class="projects dark-section">
   <div class="container">
     <h1 class="section-heading">Projects</h1>
-    <ul class="project-list">
+    <ul id="project-list">
       {% for project in site.projects %}
-        <li>
+        <li class="thumb">
           <span>{{ project.title }}</span>
-          <a href="{{ project.url }}" title="{{ project.title }}">
-            <img src="{{ project.thumbnail }}" alt="{{ project.title }}" />
-          </a>
+          <a
+            href="{{ project.url }}"
+            title="{{ project.title }}"
+            style="background-image: url({{ project.thumbnail }})"
+          ></a>
         </li>
       {% endfor %}
     </ul>
