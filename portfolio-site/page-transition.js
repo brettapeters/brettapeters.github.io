@@ -2,10 +2,10 @@ var pageTransition = (function() {
   var viewport = {
     height: window.innerHeight,
     width: window.innerWidth,
-    onresize: function() {
-      this.height = window.innerHeight,
-      this.width = window.innerWidth
-    }
+    onresize: debounce(function() {
+      this.height = window.innerHeight;
+      this.width = window.innerWidth;
+    }, 100)
   };
   var hexagonSVG = initHexagonSVG({ fillColor: '#18bc9c' });
   var detailView = initDetailView();
@@ -43,7 +43,7 @@ var pageTransition = (function() {
         // Calculate where to translate the svg to so it is centered where the click happened
         var xTransform = 100 * (event.clientX - viewport.width / 2) / viewport.width + "%";
         var yTransform = 100 * (event.clientY - viewport.height / 2) / viewport.height + "%";
-
+        
         // Calculate scale ratio for the hexagon
         var deltaX = Math.max(event.clientX, viewport.width - event.clientX);
         var deltaY = Math.max(event.clientY, viewport.height - event.clientY);
@@ -256,7 +256,19 @@ var pageTransition = (function() {
   };
 })();
 
-var list = document.getElementById('project-list');
-pageTransition.init(list.querySelectorAll('a'));
+function debounce(fn, delay) {
+  var timeout;
+  return function() {
+    var args = arguments;
+    var ctx = this;
+    clearTimeout(timeout);
+    timeout = setTimeout(function() {
+      fn.apply(ctx, args);
+    }, delay);
+  }
+}
 
-
+requestAnimationFrame(function() {
+  var list = document.getElementById('project-list');
+  pageTransition.init(list.querySelectorAll('a'));
+});
