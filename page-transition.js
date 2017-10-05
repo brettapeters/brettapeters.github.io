@@ -1,21 +1,79 @@
-var pageTransition = (function() {
-  var viewport = {
-    height: window.innerHeight,
-    width: window.innerWidth,
-    onresize: debounce(function() {
-      this.height = window.innerHeight;
-      this.width = window.innerWidth;
-    }, 100)
-  };
-  var hexagonSVG = initHexagonSVG({ fillColor: '#18bc9c' });
-  var detailView = initDetailView();
-  var thumbFacade = initThumbFacade({ topOffset: 0.35 });
+(function() {
+  var projectList = document.getElementById('project-list');
+  if (projectList) {
+    initPageTransition(projectList);
+  }
 
-  function initHexagonSVG(options) {
-    var fillColor = options.fillColor || '#000';
+  function initPageTransition(list) {
+    var viewport = initViewport();
+    var hexagonSVG = initHexagonSVG(viewport, { fillColor: '#18bc9c' });
+    var thumbFacade = initThumbFacade(viewport);
+
+    list.addEventListener('click', function(event) {
+      event.preventDefault();
+      if (!event.target.href) return false;
+
+      // Distracting ripple animation while the network request is sent
+      hexagonSVG.ripple(event);
+      // Maneuver the window so it doesn't jump around
+      document.body.style.marginRight = (viewport.width - document.body.clientWidth) + 'px';
+      document.body.style.overflow = 'hidden';
+      
+      // Fetch project page content
+      var fetchProject = fetch(event.target.href)
+      .then(function(response) {
+        if (response.ok) return response.text();
+      }).then(function(responseText) {
+        // Get new content from response
+        var wrapper = document.createElement('div');
+        wrapper.innerHTML = responseText;
+        var newContent = wrapper.querySelector('main');
+        newContent.style.visibility = 'hidden';
+        newContent.style.position = 'fixed';
+        // Get old content node
+        var oldContent = document.querySelector('main');
+        // Put the new content in the DOM
+        document.body.insertBefore(newContent, oldContent);
+        // Get the dest img from the new content
+        var destImg = newContent.querySelector('img');
+        // Animate the thumbFacade
+        thumbFacade.slideIn(event, destImg).then(function() {
+          // Swap in new content when the thumbFacade is done sliding
+          oldContent.style.opacity = 0;
+          document.body.removeChild(oldContent);
+          document.body.scrollTop = 0;
+          newContent.style.visibility = 'visible';
+          newContent.style.position = 'static';
+          var options = {
+            fill: 'forwards',
+            easing: 'cubic-bezier(0.4, 0.25, 0.2, 1)',
+            duration: 300
+          };
+          newContent.animate([
+            { opacity: 0 },
+            { opacity: 1 }
+          ], options);
+          // Fade out the overlay
+          hexagonSVG.fadeOut(options);
+          // Expand the image to its natural size
+          thumbFacade.expandToNaturalSize(destImg).then(function() {
+            // Reset the window stuff
+            document.body.style.marginRight = '';
+            document.body.style.overflow = '';
+          });
+        });
+      });
+    });
+  }
+
+  function initHexagonSVG(viewport, options) {
     var NS = "http://www.w3.org/2000/svg";
+
+    // Create SVG
     var svg = document.createElementNS(NS, 'svg');
-    var polygon = document.createElementNS(NS, 'polygon');
+    svg.setAttribute('viewBox', '0 0 1 0.86');
+
+    // Add styles to the SVG
     var svgStyles = {
       position: 'fixed',
       top: 0,
@@ -25,16 +83,16 @@ var pageTransition = (function() {
       display: 'none',
       transformOrigin: '50% 50%'
     };
-    
     Object.keys(svgStyles).forEach(function(attribute) {
       svg.style[attribute] = svgStyles[attribute]
     });
     
-    svg.setAttribute('viewBox', '0 0 1 0.86');
-    
+    // Create polygon (hexagon)
+    var polygon = document.createElementNS(NS, 'polygon');
     polygon.setAttribute('points', '0.25 0, 0.75 0, 1 0.43, 0.75 0.86, 0.25 0.86, 0 0.43');
-    polygon.setAttribute('fill', fillColor);
-    
+    polygon.setAttribute('fill', options.fillColor || '#000');
+
+    // Attach it to the body
     svg.appendChild(polygon);
     document.body.appendChild(svg);
     
@@ -48,6 +106,7 @@ var pageTransition = (function() {
         var deltaX = Math.max(event.clientX, viewport.width - event.clientX);
         var deltaY = Math.max(event.clientY, viewport.height - event.clientY);
         var farthestCornerOffset = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+
         // Find the size of the hexagon that will cover the screen
         var hexWidth = farthestCornerOffset * 4 / Math.sqrt(3);
         var scaleRatio = hexWidth / Math.min(viewport.height, viewport.width);
@@ -60,7 +119,7 @@ var pageTransition = (function() {
         svg.style.display = 'block';
         
         // Start the animation
-        return svg.animate([
+        var anim = svg.animate([
           {
             transform: fromTransform,
             opacity: 0
@@ -79,54 +138,81 @@ var pageTransition = (function() {
           easing: 'cubic-bezier(0.4, 0.25, 0.2, 1)',
           duration: 1600
         });
+      },
+      fadeOut: function(options) {
+        svg.animate([
+          { opacity: 1 },
+          { opacity: 0 }
+        ], options);
       }
     };
   }
 
-  function initThumbFacade(options) {
-    // topOffset and leftOffset determine where the image will slide to
-    // default is in the center of the viewport. Units are percentage
-    var topOffset = options.topOffset || 0.5;
-    var leftOffset = options.leftOffset || 0.5;
+  function initThumbFacade(viewport) {
+    // Create thumbfacade
     var thumbFacade = document.createElement('div');
-    var img = new Image();
+    thumbFacade.classList.add('thumb-facade');
+
+    // Create img element to put inside the thumbfacade
+    var facadeImg = new Image();
+    thumbFacade.appendChild(facadeImg);
+    document.body.appendChild(thumbFacade);
+
+    // Needs to be accessible to both animation methods
+    // slideIn sets it first to the 
     var imgAspectRatio;
     
-    thumbFacade.classList.add('thumb-facade');
-    thumbFacade.style.top = (topOffset * 100) + 'vh';
-    thumbFacade.style.left = (leftOffset * 100) + 'vw';
-    thumbFacade.appendChild(img);
-    document.body.appendChild(thumbFacade);
-    
     return {
-      slideIn: function(event) {
-        var bgUrl = event.target.style['background-image'].replace(/^url\(|\)$|\'|\"/gi, '');
-        img.src = bgUrl;
-              
-        var thumbRect = event.target.getBoundingClientRect();
-        var thumbAspectRatio = thumbRect.width / thumbRect.height;
-        imgAspectRatio = img.width / img.height;
+      slideIn: function(event, destImg) {
+        // Hide the dest img
+        destImg.style.visibility = 'hidden';
+        // Set the thumfacade img src to the dest image src
+        facadeImg.src = destImg.src;
         
+        // Get the bounding rect of the thumbfacade
+        var thumbRect = event.target.getBoundingClientRect();
+        // Get the bounding rect of the dest img
+        var destRect = destImg.getBoundingClientRect();
+
+        // Get the aspect ratio of the thumbfacade
+        var thumbAspectRatio = thumbRect.width / thumbRect.height;
+
+        // Get the aspect ratio of the img, which we will need later
+        // when the image expands to its natural size/aspect ratio
+        imgAspectRatio = destRect.width / destRect.height;
+        
+        // Since the thumbRect bg image uses 'background-size: cover'
+        // this will make sure the img ends up the exact same size.
         if (imgAspectRatio > thumbAspectRatio) {
-          img.height = thumbRect.height;
+          facadeImg.height = thumbRect.height;
         } else {
-          img.width = thumbRect.width;
+          facadeImg.width = thumbRect.width;
         }
         
+        // Set the thumbfacade to the size of the thumbRect
         thumbFacade.style.maxHeight = thumbRect.height + 'px';
         thumbFacade.style.maxWidth = thumbRect.width + 'px';
 
-        var fromTrans = 'translate(' +
-          (thumbRect.left - viewport.width * leftOffset) + 'px, ' +
-          (thumbRect.top - viewport.height * topOffset) + 'px)';
+        // Set the position where we want it to end up
+        thumbFacade.style.top = (destRect.top + destRect.height / 2) + 'px';
+        thumbFacade.style.left = (destRect.left + destRect.width / 2) + 'px';
 
+        // Give the thumbFacade a starting position exactly on top
+        // of the thumbRect
+        var fromTrans = 'translate(' +
+          (thumbRect.left - destRect.left) + 'px, ' +
+          (thumbRect.top - destRect.top) + 'px)';
+
+        // Ending translation centers the img on its position
         var toTrans = 'translate(-50%, -50%)';
         
+        // Set the position and show the thumbFacade
         thumbFacade.style.transform = fromTrans;
         thumbFacade.style.display = 'block';
         event.target.style.visibility = 'hidden';
         
-        return thumbFacade.animate([
+        // Start the animation
+        var anim = thumbFacade.animate([
           { transform: fromTrans },
           { transform: toTrans }
         ], {
@@ -135,8 +221,15 @@ var pageTransition = (function() {
           delay: 50,
           duration: 500
         });
+
+        return new Promise(function(resolve, reject) {
+          anim.onfinish = function() {
+            resolve();
+          }
+        });
       },
-      expandToNaturalSize: function() {
+      expandToNaturalSize: function(destImg) {
+        // Animation options
         var options = {
           fill: 'forwards',
           easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
@@ -144,131 +237,70 @@ var pageTransition = (function() {
           duration: 500
         };
         
-        var toWidth = Math.min(viewport.width, img.naturalWidth);
+        // Get natural dimensions, being careful not to expand
+        // the image past the viewport edge if it is bigger
+        var toWidth = Math.min(viewport.width, facadeImg.naturalWidth);
         var toHeight = toWidth / imgAspectRatio;
-        
-        var fromStyles = {
-          maxWidth: thumbFacade.style.maxWidth,
-          maxHeight: thumbFacade.style.maxHeight
-        };
-        
-        var toStyles = {
-          maxWidth: toWidth + 'px',
-          maxHeight: toHeight + 'px'
-        };
-    
-        thumbFacade.animate([fromStyles, toStyles], options);
-        
-        img.animate([
+
+        // Animate the thumbFacade and the img together
+        var a1 = thumbFacade.animate([
           {
-            width: img.width + 'px',
-            height: img.height + 'px'
+            maxWidth: thumbFacade.style.maxWidth,
+            maxHeight: thumbFacade.style.maxHeight
+          },
+          {
+            maxWidth: toWidth + 'px',
+            maxHeight: toHeight + 'px'
+          }
+        ], options);
+        
+        var a2 = facadeImg.animate([
+          {
+            width: facadeImg.width + 'px',
+            height: facadeImg.height + 'px'
           },
           {
             width: toWidth + 'px',
             height: toHeight + 'px'
           }
         ], options);
+
+        return Promise.all([a1, a2].map(function(anim) {
+          return new Promise(function(resolve, reject) {
+            anim.onfinish = function() {
+              destImg.style.visibility = 'visible';
+              thumbFacade.style.display = 'none';
+              resolve();
+            }
+          });
+        }));
       }
     };
   }
 
-  function initDetailView() {
-    var detailView = document.createElement('div');
-    detailView.setAttribute('id', 'project-container');
+  function initViewport() {
+    var vp = {
+      height: window.innerHeight,
+      width: window.innerWidth,
+      onresize: debounce(function() {
+        this.height = window.innerHeight,
+        this.width = window.innerWidth
+      })
+    };
 
-    var title = document.createElement('h1');
-    var image = document.createElement('img');
-    var content = document.createElement('div');
-    detailView.appendChild(title);
-    detailView.appendChild(image);
-    detailView.appendChild(content);
-    document.body.appendChild(detailView);
-    
-    return {
-      fadeIn: function() {
-        detailView.style.visibility = 'visible';
-        detailView.animate([
-          {
-            opacity: 0
-          },
-          {
-            opacity: 1
-          }
-        ], {
-          fill: 'forwards',
-          easing: 'ease-out',
-          duration: 600
-        })
-      },
-      setTitle: function(text) {
-        title.textContent = text;
-      },
-      setContent: function(newContent) {
-        console.log(newContent);
-        content.appendChild(newContent);
-      },
-      setImage: function(src) {
+    window.onresize = vp.onresize.bind(vp);
+    return vp;
+  }
 
-      }
-    }
-  }  
-
-  function doTransition(event) {
-    // should move this so it's only prevented if fetch is successful
-    event.preventDefault();
-    // Fetch detail page content then...
-    fetch(event.target.href).then(function(response) {
-      if (response.ok) {
-        return response.text();
-      }
-    }).then(function(responseText) {
-      var wrapper = document.createElement('div');
-      wrapper.innerHTML = responseText;
-      var newContent = wrapper.querySelector('.content');
-      detailView.setContent(newContent);
-    });
-
-    detailView.setTitle('Project Title');
-    
-
-    // Add a negative margin to avoid the jumping scrollbar
-    document.body.style.marginRight = (viewport.width - document.body.clientWidth) + 'px';
-    document.body.style.overflow = 'hidden';
-    
-    hexagonSVG.ripple(event);
-    var facadeSlide = thumbFacade.slideIn(event);
-    facadeSlide.onfinish = function() {
-      thumbFacade.expandToNaturalSize();
-      detailView.setImage('');
-      detailView.fadeIn();
+  function debounce(fn, delay) {
+    var timeout;
+    return function() {
+      var args = arguments;
+      var ctx = this;
+      clearTimeout(timeout);
+      timeout = setTimeout(function() {
+        fn.apply(ctx, args);
+      }, delay);
     }
   }
-  
-  return {
-    init: function(thumbs) {
-      for (var i = 0; i < thumbs.length; i++) {
-        thumbs[i].addEventListener('click', doTransition);
-      }
-
-      window.onresize = viewport.onresize.bind(viewport);
-    }
-  };
 })();
-
-function debounce(fn, delay) {
-  var timeout;
-  return function() {
-    var args = arguments;
-    var ctx = this;
-    clearTimeout(timeout);
-    timeout = setTimeout(function() {
-      fn.apply(ctx, args);
-    }, delay);
-  }
-}
-
-requestAnimationFrame(function() {
-  var list = document.getElementById('project-list');
-  pageTransition.init(list.querySelectorAll('a'));
-});
