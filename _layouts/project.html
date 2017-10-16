@@ -1,10 +1,12 @@
 ---
 layout: default
 ---
-<h1>{{ page.title }}</h1>
-<p class="meta">{{ page.date | date_to_string }}</p>
 
-<div class="content">
+<div class="container">
+	<h1>{{ page.title }}</h1>
+	<p class="meta">{{ page.date | date_to_string }}</p>
 	<img src="{{ page.thumbnail }}" alt="project" />
-	{{ content }}
+	<div class="content">
+		{{ content }}
+	</div>
 </div>
