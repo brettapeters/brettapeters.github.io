@@ -1,0 +1,230 @@
+---
+---
+
+// .thumb {
+//   text-align: center;
+//   color: $main-text-color;
+//   a {
+//     display: block;
+//     width: 100%;
+//     height: 200px;
+//     margin: 20px;
+//     list-style-type: none;
+//     text-align: center;
+//     text-decoration: none;
+//     position: relative;
+//     z-index: 0;
+//     background-size: cover;
+//     background-position: center center;
+//     width: 280px;
+//   }
+// }
+
+// .thumb-facade {
+//   position: fixed;
+//   z-index: 2;
+//   overflow: hidden;
+//   height: 100%;
+//   width: 100%;
+//   display: none;
+//   margin: 0 calc(50vw - 50%);
+// }
+
+// .thumb-facade img {
+//   position: absolute;
+//   top: 50%;
+//   left: 50%;
+//   transform: translate(-50%, -50%);
+// }
+
+// Imports
+// ==========================================================================
+@import url('https://fonts.googleapis.com/css?family=Arimo');
+@import url('https://fonts.googleapis.com/css?family=Lobster');
+
+// Breakpoints
+// ==========================================================================
+$break-0: 0;
+$break-1: 20em; // 320px
+$break-2: 30em; // 480px
+$break-3: 37.5em; // 600px
+$break-4: 48em; // 768px
+$break-5: 60em; // 960px
+$break-6: 68.75em; // 1100px
+
+$default-font-size: 16px;
+
+$font-stack-arimo: 'Arimo',sans-serif;
+$font-stack-lobster: 'Lobster', sans-serif;
+
+// Colors 
+// ==========================================================================
+
+$color-accent: #18bc9c;
+$color-bg: #f3f3f3;
+$color-bg-dark: #000021;
+$color-text-main: #fff;
+$color-text-secondary: #a0a0af;
+$color-text-main-dark: #000021;
+$color-text-secondary-dark: #4a4a61;
+
+// Mixins
+// ===========================================================================
+@mixin center {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+html {
+  background-color: $color-bg;
+}
+
+body {
+  font-family: $font-stack-arimo;
+  font-size: $default-font-size;
+  color: $color-text-main-dark;
+  margin: 0;
+}
+
+a {
+  color: $color-text-main;
+  text-decoration: none;
+  &:hover {
+    color: $color-text-secondary;
+  }
+}
+
+ul {
+  padding-left: 0;
+  margin: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 100;
+}
+
+h1 {
+  font-family: $font-stack-lobster;
+  font-size: 3em;
+}
+
+.container {
+  @include center;
+  overflow: auto;
+  max-width: $break-5;
+}
+
+.section-heading {
+  padding-top: 1px;
+  text-align: center;
+}
+
+.dark-section .section-heading {
+  color: $color-text-main;
+}
+
+.section-divider {
+  margin: 0;
+  background: $color-accent;
+  height: 4px;
+  border: none;
+}
+
+.main-nav {
+  padding: 1em;
+  background-color: $color-bg-dark;
+  ul {
+    display: flex;
+    justify-content: flex-end;
+  }
+  li {
+    padding: 0 0.75em;
+    list-style-type: none;
+  }
+}
+
+.profile {
+  text-align: center;
+  background: radial-gradient($color-bg 35%, $color-text-secondary);
+  background-color: $color-bg;
+  header {
+    padding: 5em 0.5em 4em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  a {
+    color: $color-accent;
+  }
+  .headshot {
+    width: 150px;
+    margin: 0 2em;
+  }
+  @media (min-width: $break-4) {
+    h1 {
+      font-size: 4em;
+    }
+    .headshot {
+      width: 200px;
+    }
+  }
+}
+
+#projects {
+  background-color: $color-bg-dark;
+}
+
+.project-list {
+  padding: 0 1em 2em;
+  @media (min-width: $break-2) {
+    display: flex;
+    flex-wrap: wrap;
+	}
+}
+
+.project {
+  box-sizing: border-box;
+  margin-bottom: 1em;
+  padding: 0 1em;
+  list-style-type: none;
+  h4 {
+    color: $color-text-main;
+  }
+	a {
+    display: block;
+    height: 220px;
+    max-width: $break-2;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+	}
+	@media (min-width: $break-2) {
+		max-width: none;
+		width: 50%;
+	}
+	@media (min-width: $break-4) {
+		width: 33.333%;
+  }
+}
+
+@supports (display: grid) {
+	@media (min-width: $break-2) {
+		.project-list {
+			display: grid;
+			grid-template-columns: repeat(2, 1fr);
+			grid-column-gap: 2em;
+			grid-row-gap: 2em;
+		}
+		.project {
+      width: auto;
+      padding: 0;
+      margin: 0;
+		}
+	}
+	@media (min-width: $break-4) {
+		.project-list {
+			grid-template-columns: repeat(3, 1fr);
+		}
+	}
+}
