@@ -25,9 +25,9 @@ $(document).ready(function() {
        * (Barba.js also comes with an handy Promise polyfill!)
        */
       // Start the ripple overlay
-      hexagonSVG.ripple(event);
+      hexagonSVG.ripple(mouseEvent);
       // Move the clicked li over the overlay
-      $(event.target).closest('li').css('z-index', 1);
+      $(mouseEvent.target).closest('li').css('z-index', 1);
       
 
   
