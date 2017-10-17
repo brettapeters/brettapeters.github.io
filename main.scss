@@ -1,11 +1,6 @@
 ---
 ---
 
-// Imports
-// ==========================================================================
-@import url('https://fonts.googleapis.com/css?family=Arimo');
-@import url('https://fonts.googleapis.com/css?family=Lobster');
-
 // Breakpoints
 // ==========================================================================
 $break-0: 0;
@@ -158,12 +153,11 @@ h1 {
   }
 	a {
     display: block;
-    height: 220px;
     max-width: $break-2;
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
-	}
+  }
 	@media (min-width: $break-2) {
 		max-width: none;
 		width: 50%;

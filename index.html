@@ -22,7 +22,7 @@ title: Brett Peters
       <image xlink:href="/assets/images/face.jpg" height="1" width="1" clip-path="url(#hexagon-clip)" filter="url(#green-blue-duotone)"/>
     </svg>
     <h1>Brett Peters</h1>
-    <h3>I'm a Front-end Developer from Boulder, CO. <a href="/about" class="no-barba">Read more about me...</a></h3>
+    <h3>I'm a Front-end Developer from Boulder, CO. <a href="/about">Read more about me...</a></h3>
   </header>
 </div> <!-- /profile -->
 
@@ -32,14 +32,28 @@ title: Brett Peters
   <div class="container">
     <h1 class="section-heading">Projects</h1>
     <ul class="project-list">
-      {% for project in site.projects %}
-        <li class="project">
+      {% for project in site.projects reversed %}
+        <li class="project">         
           <h4>{{project.title}}</h4>
           <a
             href="{{project.url}}"
             title="{{project.title}}"
-            style="background-image: url({{project.thumbnail}})"
-          ></a>
+            class="js-lazy-image" 
+            data-src="{{project.thumbnail}}"
+            data-height="220px">
+          </a>
+          <noscript>
+            <a
+              href="{{project.url}}"
+              title="{{project.title}}"
+              style="background-image: url({{project.thumbnail}}); height: 220px">
+            </a>
+          </noscript>
+            {% if project.tech %}
+              {% for tech in project.tech %}
+                <pre style="color: #fff">{{tech}}</pre>
+              {% endfor %}
+            {% endif %}
         </li>
       {% endfor %}
     </ul>
