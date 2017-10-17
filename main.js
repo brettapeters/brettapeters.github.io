@@ -8,7 +8,8 @@ $(document).ready(function() {
       // before fading in new content
       Promise
         .all([this.newContainerLoading, this.fadeOut()])
-        .then(this.fadeIn.bind(this));
+        .then(this.fadeIn.bind(this))
+        .then(this.finish.bind(this));
     },
   
     fadeOut: function() {
@@ -36,9 +37,12 @@ $(document).ready(function() {
         ease: Power1.easeInOut
       });
       
-      tweenPromise(tween).then(function() {
-        _this.done();
-      });
+      return tweenPromise(tween);
+    },
+
+    finish: function() {
+      document.body.scrollTop = 0;
+      this.done();
     }
   });
   
