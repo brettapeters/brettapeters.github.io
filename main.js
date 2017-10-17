@@ -23,7 +23,7 @@ $(document).ready(function() {
     },
   
     fadeIn: function() {
-      var _this = this;
+      $(window).scrollTop(0);
 
       $(this.oldContainer).hide();
   
@@ -41,7 +41,6 @@ $(document).ready(function() {
     },
 
     finish: function() {
-      $(window).scrollTop(0);
       this.done();
     }
   });
