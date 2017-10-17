@@ -1,42 +1,6 @@
 ---
 ---
 
-// .thumb {
-//   text-align: center;
-//   color: $main-text-color;
-//   a {
-//     display: block;
-//     width: 100%;
-//     height: 200px;
-//     margin: 20px;
-//     list-style-type: none;
-//     text-align: center;
-//     text-decoration: none;
-//     position: relative;
-//     z-index: 0;
-//     background-size: cover;
-//     background-position: center center;
-//     width: 280px;
-//   }
-// }
-
-// .thumb-facade {
-//   position: fixed;
-//   z-index: 2;
-//   overflow: hidden;
-//   height: 100%;
-//   width: 100%;
-//   display: none;
-//   margin: 0 calc(50vw - 50%);
-// }
-
-// .thumb-facade img {
-//   position: absolute;
-//   top: 50%;
-//   left: 50%;
-//   transform: translate(-50%, -50%);
-// }
-
 // Imports
 // ==========================================================================
 @import url('https://fonts.googleapis.com/css?family=Arimo');
@@ -110,7 +74,6 @@ h1 {
 
 .container {
   @include center;
-  overflow: auto;
   max-width: $break-5;
 }
 
@@ -173,6 +136,7 @@ h1 {
 
 #projects {
   background-color: $color-bg-dark;
+  overflow: auto;
 }
 
 .project-list {

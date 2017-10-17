@@ -3,7 +3,7 @@ $(document).ready(function() {
   viewport = initViewport();
 
   // Init the overlay svg
-  var hexagonSVG = HexagonSVG(viewport, { fill: '#18bc9c', duration: 1.12 })
+  var hexagonSVG = HexagonSVG(viewport, { fill: '#18bc9c' });
 
   // Init Barba
   Barba.Pjax.start();
@@ -24,17 +24,69 @@ $(document).ready(function() {
        * this.newContainerLoading is a Promise for the loading of the new container
        * (Barba.js also comes with an handy Promise polyfill!)
        */
-      // Start the ripple overlay
-      hexagonSVG.ripple(mouseEvent);
-      // Move the clicked li over the overlay
-      $(mouseEvent.target).closest('li').css('z-index', 1);
       
+      // Start the hexagon ripple overlay as soon as the transition starts
+      hexagonSVG.ripple(mouseEvent);
+      // Once the new container is loaded, swap the containers and slide
+      // the image over to its new place.
+      this.newContainerLoading.then(function() {
+        this.slideImg();
+        hexagonSVG.fadeOut();
+        this.fadeOut().then(this.fadeIn.bind(this));
+      }.bind(this));
+    },
 
-  
-      // As soon the loading is finished and the old page is faded out, let's fade the new page
-      // Promise
-      //   .all([this.newContainerLoading, this.fadeOut()])
-      //   .then(this.fadeIn.bind(this));
+    slideImg: function() {
+      var $img = $(this.newContainer).find('img');
+
+      var position = {
+        top: $img.position().top - $(this.oldContainer).height(),
+        left: $img.position().left
+      };
+
+      var $facade = $('<div>')
+        .css({
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          height: '100%',
+          width: '100%',
+          maxHeight: mouseEvent.target.clientHeight,
+          maxWidth: mouseEvent.target.clientWidth,
+          overflow: 'hidden'
+        });
+
+      var $facadeImg = $img.clone()
+        .css({
+          position: 'relative',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)'
+        });
+
+      // Make the facade look like a background-position: cover element
+      // by comparing the aspect ratios and setting the dimensions accordingly
+      if (($img.width() / $img.height()) > (mouseEvent.target.clientWidth / mouseEvent.target.clientHeight)) {
+        $facadeImg.height(mouseEvent.target.clientHeight);
+      } else {
+        $facadeImg.width(mouseEvent.target.clientWidth);
+      }
+      
+      $facade.append($facadeImg)
+        .appendTo(document.body);
+
+      var offset = $(mouseEvent.target).offset();
+
+      var tween = TweenLite.fromTo($facade, 0.6, {
+        x: offset.left - window.scrollX,
+        y: offset.top - window.scrollY
+      }, {
+        x: position.left,
+        y: position.top,
+        ease: Power1.easeInOut
+      });
+
+      $(mouseEvent.target).hide();
     },
   
     fadeOut: function() {
@@ -43,7 +95,6 @@ $(document).ready(function() {
        */
 
       var tween = TweenLite.to($(this.oldContainer), 0.2, {
-        y: 50,
         opacity: 0,
         ease: Power1.easeInOut
       });
@@ -63,11 +114,9 @@ $(document).ready(function() {
       $(this.oldContainer).hide();
   
       var tween = TweenLite.fromTo($(this.newContainer), 0.2, {
-        y: 50,
         visibility: 'visible',
         opacity: 0
       },{
-        y: 0,
         opacity: 1,
         ease: Power1.easeInOut
       });
@@ -154,6 +203,10 @@ function HexagonSVG(viewport, options) {
       })
     )
     .appendTo(document.body);
+
+  var tl = new TimelineLite()
+  var scaleDuration = options.scaleDuration || 1.2;
+  var fadeDuration = options.fadeDuration || 0.8;
   
   return {
     ripple: function(event) {      
@@ -166,17 +219,23 @@ function HexagonSVG(viewport, options) {
       var hexWidth = farthestCornerOffset * 4 / Math.sqrt(3);
       var scaleRatio = hexWidth / Math.min(viewport.height, viewport.width);
 
-      // Tween it up
-      var tween = TweenLite.fromTo($svg, options.duration || 1, {
+      // Tween it up      
+      tl.set($svg, {
         x: event.clientX - viewport.width / 2,
         y: event.clientY - viewport.height / 2,
         transformOrigin: "50% 50%",
-        scale: 0,
-        opacity: 0
-      }, {
-        scale: scaleRatio,
-        opacity: 1
-      });
+        scale: 0
+      })
+      .to($svg, scaleDuration, { scale: scaleRatio })
+      .to($svg, 0.01, { opacity: 1 }, '-=' + (scaleDuration - 0.03));
+
+      return tweenPromise(tl);
+    },
+
+    fadeOut: function() {
+      tl.to($svg, fadeDuration + scaleDuration, { opacity: 0 }, '-=' + (scaleDuration - 0.041));
+
+      return tweenPromise(tl);
     }
   }
 }
