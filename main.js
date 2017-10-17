@@ -41,9 +41,7 @@ $(document).ready(function() {
     },
 
     finish: function() {
-      document.body.style.overflow = 'hidden';
-      document.body.scrollTop = 0;
-      document.body.style.overflow = '';
+      $(window).scrollTop(0);
       this.done();
     }
   });
