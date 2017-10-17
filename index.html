@@ -34,15 +34,19 @@ title: Brett Peters
     <ul class="project-list">
       {% for project in site.projects %}
         <li class="project">
-          <h4>{{ project.title }}</h4>
+          <h4>{{project.title}}</h4>
           <a
-            href="{{ project.url }}"
-            title="{{ project.title }}"
-            style="background-image: url({{ project.thumbnail }})"
+            href="{{project.url}}"
+            title="{{project.title}}"
+            style="background-image: url({{project.thumbnail}})"
           ></a>
         </li>
       {% endfor %}
     </ul>
   </div> <!-- /container -->
-</section>
+</section> <!-- /projects -->
+
+<hr class="section-divider">
+
+
 
