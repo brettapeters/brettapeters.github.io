@@ -1,4 +1,4 @@
-name: Hank Quinlan, Horrible Cop
+name: Brett Peters
 markdown: kramdown
 permalink: /blog/:year/:month/:day/:title
 collections:
@@ -7,3 +7,5 @@ collections:
     permalink: /:collection/:name
   posts:
     output: true
+# Google Analytics
+google_analytics: UA-109281829-1
