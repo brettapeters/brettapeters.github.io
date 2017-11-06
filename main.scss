@@ -69,7 +69,14 @@ h1 {
 
 .container {
   @include center;
+  box-sizing: border-box;
   max-width: $break-5;
+  @media (max-width: $break-5) {
+    width: $break-4;
+  }
+  @media (max-width: $break-4) {
+    width: 100%;
+  }
 }
 
 .section-heading {
@@ -148,7 +155,7 @@ h1 {
   margin-bottom: 1em;
   padding: 0 1em;
   list-style-type: none;
-  h4 {
+  h3 {
     color: $color-text-main;
   }
 	a {
@@ -157,6 +164,19 @@ h1 {
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
+  }
+  .tech-list {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0.5em 0;
+  }
+  pre {
+    color: $color-text-secondary;
+    background: transparent;
+    padding: 0.4em 0.5em;
+    margin: 3px;
+    border: 1px solid $color-text-secondary;
+    font-size: 14px;
   }
 	@media (min-width: $break-2) {
 		max-width: none;
@@ -186,4 +206,14 @@ h1 {
 			grid-template-columns: repeat(3, 1fr);
 		}
 	}
+}
+
+.project-details {
+  padding: 0 1em;
+  h1 {
+    font-size: 4em;
+  }
+  img {
+    max-width: 100%;
+  }
 }

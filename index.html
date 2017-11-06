@@ -33,28 +33,30 @@ title: Brett Peters
     <h1 class="section-heading">Projects</h1>
     <ul class="project-list">
       {% for project in site.projects reversed %}
-        <li class="project">         
-          <h4>{{project.title}}</h4>
+      <li class="project">         
+        <h3>{{project.title}}</h3>
+        <a
+          href="{{project.url}}"
+          title="{{project.title}}"
+          class="js-lazy-image" 
+          data-src="{{project.thumbnail}}"
+          data-height="220px">
+        </a>
+        <noscript>
           <a
             href="{{project.url}}"
             title="{{project.title}}"
-            class="js-lazy-image" 
-            data-src="{{project.thumbnail}}"
-            data-height="220px">
+            style="background-image: url({{project.thumbnail}}); height: 220px">
           </a>
-          <noscript>
-            <a
-              href="{{project.url}}"
-              title="{{project.title}}"
-              style="background-image: url({{project.thumbnail}}); height: 220px">
-            </a>
-          </noscript>
-            {% if project.tech %}
-              {% for tech in project.tech %}
-                <pre style="color: #fff">{{tech}}</pre>
-              {% endfor %}
-            {% endif %}
-        </li>
+        </noscript>
+        {% if project.tech %}
+        <div class="tech-list">
+          {% for tech in project.tech %}
+          <pre>{{tech}}</pre>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </li>
       {% endfor %}
     </ul>
   </div> <!-- /container -->
