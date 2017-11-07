@@ -1,0 +1,16 @@
+<nav class="top-nav">
+  <a href="/">
+    <svg height="48" viewbox="0 0 1 0.86">
+      <polygon points="0.25 0, 0.75 0, 1 0.43, 0.75 0.86, 0.25 0.86, 0 0.43" />
+      <text x="0.5" y="0.65" text-anchor="middle" font-size="0.5">BP</text>
+    </svg>
+  </a>
+  <ul>
+    <li><a href="/#projects">Projects</a></li>
+    <li><a href="/#about">About</a></li>
+    <li><a href="/#contact">Contact</a></li>
+    {% if site.posts.size > 0 %}
+    <li><a href="/blog">Blog</a></li>
+    {% endif %}
+  </ul>
+</nav>
