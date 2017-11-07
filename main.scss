@@ -51,6 +51,12 @@ a {
   &:hover {
     color: $color-text-secondary;
   }
+  .light-section & {
+    color: $color-accent;
+    &:hover {
+      color: $color-text-secondary-dark;
+    }
+  }
 }
 
 ul {
@@ -60,6 +66,10 @@ ul {
 
 h1, h2, h3, h4, h5, h6 {
   font-weight: 100;
+  color: $color-text-main;
+  .light-section & {
+    color: $color-text-main-dark;
+  }
 }
 
 h1 {
@@ -84,10 +94,6 @@ h1 {
   text-align: center;
 }
 
-.dark-section .section-heading {
-  color: $color-text-main;
-}
-
 .section-divider {
   margin: 0;
   background: $color-accent;
@@ -95,9 +101,12 @@ h1 {
   border: none;
 }
 
-.main-nav {
-  padding: 1em;
+.top-nav {
   background-color: $color-bg-dark;
+  padding: 0.5em 1em;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   ul {
     display: flex;
     justify-content: flex-end;
@@ -105,6 +114,19 @@ h1 {
   li {
     padding: 0 0.75em;
     list-style-type: none;
+  }
+  a {
+    display: inherit;
+  }
+  svg {
+    fill: $color-accent;
+    font-family: $font-stack-lobster;
+    text {
+      fill: $color-text-main-dark;
+    }
+    &:hover text {
+      fill: $color-text-main;
+    }
   }
 }
 
@@ -118,9 +140,6 @@ h1 {
     align-items: center;
     justify-content: center;
     flex-wrap: wrap;
-  }
-  a {
-    color: $color-accent;
   }
   .headshot {
     width: 150px;
