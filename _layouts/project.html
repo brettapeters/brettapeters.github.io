@@ -2,10 +2,17 @@
 layout: default
 ---
 <div class="container project-details light-section">
-	<h1>{{page.title}}</h1>
-	<a href="{{page.code}}">Code</a> | <a href="{{page.live}}">Live</a>
-	<p class="meta">{{page.date | date_to_string}}</p>
-	<img src="{{page.thumbnail}}" alt="project" />
+	<div class="project-header">
+		<div>
+			<h1>{{page.title}}</h1>
+			{% if page.shortDescription %}
+				<p class="short-description">{{page.shortDescription}}</p>
+			{% endif %}
+		</div>
+		<a class="outline" href="{{page.live}}">Live</a>
+		<a class="outline" href="{{page.code}}">Code</a>
+	</div>
+	<img class="fluid-img" src="{{page.thumbnail}}" alt="project" />
 	<div class="content">
 		{{content}}
 	</div>

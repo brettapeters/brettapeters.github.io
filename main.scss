@@ -80,11 +80,12 @@ h1 {
 .container {
   @include center;
   box-sizing: border-box;
-  max-width: $break-5;
-  @media (max-width: $break-5) {
-    width: $break-4;
-  }
+  padding: 0 1em;
+  max-width: $break-4;
   @media (max-width: $break-4) {
+    width: $break-3;
+  }
+  @media (max-width: $break-3) {
     width: 100%;
   }
 }
@@ -191,10 +192,7 @@ h1 {
   }
   pre {
     color: $color-text-secondary;
-    background: transparent;
-    padding: 0.4em 0.5em;
-    margin: 3px;
-    border: 1px solid $color-text-secondary;
+    border-color: $color-text-secondary;
     font-size: 14px;
   }
 	@media (min-width: $break-2) {
@@ -227,12 +225,28 @@ h1 {
 	}
 }
 
-.project-details {
-  padding: 0 1em;
+.project-header {
   h1 {
-    font-size: 4em;
+    display: inline-block;
+    margin-bottom: 0.25em;
+    margin-right: 0.5em;
   }
-  img {
-    max-width: 100%;
+  p {
+    display: inline-block;
+    color: $color-text-secondary;
   }
+}
+
+.outline {
+  display: inline-block;
+  background: transparent;
+  padding: 0.4em 0.5em;
+  margin: 3px;
+  border: 1px solid;
+  border-color: inherit;
+}
+
+.fluid-img {
+  max-width: 100%;
+  padding: 1em 0;
 }
