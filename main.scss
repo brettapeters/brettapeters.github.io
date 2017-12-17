@@ -162,7 +162,7 @@ h1 {
 }
 
 .project-list {
-  padding: 0 1em 2em;
+  // padding: 0 1em 2em;
   @media (min-width: $break-2) {
     display: flex;
     flex-wrap: wrap;
@@ -199,7 +199,7 @@ h1 {
 		max-width: none;
 		width: 50%;
 	}
-	@media (min-width: $break-4) {
+	@media (min-width: $break-5) {
 		width: 33.333%;
   }
 }
@@ -218,7 +218,7 @@ h1 {
       margin: 0;
 		}
 	}
-	@media (min-width: $break-4) {
+	@media (min-width: $break-5) {
 		.project-list {
 			grid-template-columns: repeat(3, 1fr);
 		}
