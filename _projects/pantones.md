@@ -9,4 +9,4 @@ code: "https://codepen.io/bap13/pen/oLjoJN"
 tech: ["jQuery"]
 ---
 
-This is some content for a project. LALALALALALALALALALALALALALALa
+I really wanted to have something featured on the front page of [CodePen](https://codepen.io), which motivated this project. I found a folder of Pantone color JSON files on Github and created this simple visualizer to show a mimic of a Pantone color swatch.

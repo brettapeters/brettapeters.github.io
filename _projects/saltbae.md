@@ -9,4 +9,4 @@ code: "https://github.com/brettapeters/brettapeters.github.io/tree/master/smallt
 tech: ["HTML5 Canvas"]
 ---
 
-This is some content for a project. LALALALALALALALALALALALALALALa
+I made this demo to get a little practice with Canvas. It was interesing to figure out how to get the "salt" to look semi-realistic and random.

@@ -77,6 +77,12 @@ h1 {
   font-size: 3em;
 }
 
+footer {
+  margin: 2em 0 0;
+  padding: 0.5em;
+  background-color: $color-bg-dark;
+}
+
 .container {
   @include center;
   box-sizing: border-box;
@@ -162,7 +168,7 @@ h1 {
 }
 
 .project-list {
-  // padding: 0 1em 2em;
+  margin: 2em 0;
   @media (min-width: $break-2) {
     display: flex;
     flex-wrap: wrap;
@@ -249,4 +255,16 @@ h1 {
 .fluid-img {
   max-width: 100%;
   padding: 1em 0;
+}
+
+.project-details {
+  .content {
+    padding: 0.5em;
+    border-top: 4px solid $color-accent;
+    p {
+      line-height: 1.5;
+      color: $color-text-secondary-dark;
+      margin: 2em 0;
+    }
+  }
 }

@@ -9,4 +9,4 @@ code: "https://github.com/brettapeters/brettapeters.github.io/tree/master/smallt
 tech: ["Web Workers", "GSAP TweenMax", "Material Design"]
 ---
 
-This is some content for a project. LALALALALALALALALALALALALALALa
+I made this demo so I could practice using a Web Worker and Material UI. The form sends the input to the worker, which calculates the nth prime number without interrupting the UI animations on the main thread.
